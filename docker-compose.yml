@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    volumes:
+      - ./database/data/dev:/var/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=staff
+    ports:
+      - '54321:5432'
+    container_name: postgres
+  nginx:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./config/nginx
+    depends_on:
+      - server
+      - client
+    restart: always
+    ports:
+      - '1000:1000'
+    container_name: nginx
+  server:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    ports:
+      - '5000:5000'
+    env_file:
+      - .env
+    volumes:
+      - ./server/node_modules:/app/node_modules
+      - ./server/src:/app/src
+    depends_on:
+      - postgres
+    restart: always
+    container_name: server
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    stdin_open: true
+    volumes:
+      - ./client/node_modules:/app/node_modules
+      - ./client/src:/app/src
+      - ./client/public:/app/public
+    ports:
+      - '3000:3000'
+    restart: always
+    container_name: client
