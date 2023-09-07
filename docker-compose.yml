@@ -33,7 +33,7 @@ services:
       - .env
     volumes:
       - ./server/node_modules:/app/node_modules
-      - ./server/src:/app/src
+      - ./server:/app
     depends_on:
       - postgres
     restart: always

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "prod": "nodemon index.js",
+    "dev": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && node index.js"
   },
   "keywords": [],
   "author": "",
